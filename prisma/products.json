@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Tesla Model 3",
+    "company": "Tesla",
+    "description": "All-electric sedan with cutting-edge technology, long driving range (up to ~340 miles), and quick acceleration. Popular for its Autopilot feature.",
+    "featured": true,
+    "image": "https://res.cloudinary.com/dcm7zyplb/image/upload/v1756546844/tesla_sg8yyj.jpg",
+    "price": 40000,
+    "clerkId": "clerkId"
+  },
+  {
+    "name": "Mercedes-Benz C-Class",
+    "company": "Mercedes Benz",
+    "description": "Stylish luxury sedan with refined interior, advanced tech, and smooth performance. Competes directly with BMW 3 Series.",
+    "featured": true,
+    "image": "https://res.cloudinary.com/dcm7zyplb/image/upload/v1756546785/benz_suekfl.jpg",
+    "price": 46000,
+    "clerkId": "clerkId"
+  },
+  {
+    "name": "Ford Mustang",
+    "company": "Ford",
+    "description": "Iconic American muscle car with powerful V8 options, sporty looks, and thrilling driving experience. Available in coupe and convertible.",
+    "featured": true,
+    "image": "https://res.cloudinary.com/dcm7zyplb/image/upload/v1756546786/ford_tlmn7p.jpg",
+    "price": 32000,
+    "clerkId": "clerkId"
+  },
+  {
+    "name": "Porsche 911 Carrera",
+    "company": "Porsche",
+    "description": "Legendary German sports car known for timeless design, precision handling, and powerful turbocharged engines. A symbol of performance luxury.",
+    "featured": false,
+    "image": "https://res.cloudinary.com/dcm7zyplb/image/upload/v1756546785/porsche_qxyip9.jpg",
+    "price": 400,
+    "clerkId": "clerkId"
+  }
+]

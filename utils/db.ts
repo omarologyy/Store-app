@@ -1,16 +1,13 @@
-// lib/prismaDynamic.ts
 import { PrismaClient } from "@prisma/client";
 
-type TenantConfig = {
-  databaseUrl: string;
-};
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-export function createPrismaClient(config: TenantConfig): PrismaClient {
-  return new PrismaClient({
-    datasources: {
-      db: {
-        url: config.databaseUrl,
-      },
-    },
+export const db =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    log: ["query", "info", "warn", "error"],
   });
-}
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+
+export default db;
