@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb", // Allow processing of larger files for validation
+    },
+  },
 };
 
 export default nextConfig;

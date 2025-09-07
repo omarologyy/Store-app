@@ -2,8 +2,8 @@
 
 import db from "@/utils/db";
 import { redirect } from "next/navigation";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { productSchema } from "./schemas";
+import { currentUser } from "@clerk/nextjs/server";
+import { productSchema, imageSchema } from "./schemas";
 
 const renderError = (error: unknown): { message: string } => {
   console.log(error);
@@ -63,16 +63,30 @@ export const createProductAction = async (
 
   try {
     const rawData = Object.fromEntries(formData);
-    const validatedFields = productSchema.parse(rawData);
-    console.log(rawData);
+    const file = formData.get("image") as File;
 
-    // await db.product.create({
-    //   data: {
-    //     ...validatedFields,
-    //     image: "/images/product-1.jpg",
-    //     clerkId: user.id,
-    //   },
-    // });
+    // Validate product fields
+    const validatedFields = productSchema.safeParse(rawData);
+    if (!validatedFields.success) {
+      const errors = validatedFields.error.issues.map((issue) => issue.message);
+      throw new Error(errors.join(", "));
+    }
+
+    // Validate image file using safeParse instead of validateWithZodType
+    const validatedFile = imageSchema.safeParse({ image: file });
+    if (!validatedFile.success) {
+      const errors = validatedFile.error.issues.map((issue) => issue.message);
+      throw new Error(errors.join(", "));
+    }
+
+    await db.product.create({
+      data: {
+        ...validatedFields.data,
+        image: "/images/product-1.jpg",
+        clerkId: user.id,
+      },
+    });
+
     return { message: "product created" };
   } catch (error) {
     return renderError(error);
