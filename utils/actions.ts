@@ -4,6 +4,7 @@ import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import { productSchema, imageSchema } from "./schemas";
+import { uploadImage } from "./supabase";
 
 const renderError = (error: unknown): { message: string } => {
   console.log(error);
@@ -72,23 +73,23 @@ export const createProductAction = async (
       throw new Error(errors.join(", "));
     }
 
-    // Validate image file using safeParse instead of validateWithZodType
+    // Validate image file using safeParse
     const validatedFile = imageSchema.safeParse({ image: file });
     if (!validatedFile.success) {
       const errors = validatedFile.error.issues.map((issue) => issue.message);
       throw new Error(errors.join(", "));
     }
 
+    const fullPath = await uploadImage(validatedFile.data.image);
     await db.product.create({
       data: {
         ...validatedFields.data,
-        image: "/images/product-1.jpg",
+        image: fullPath,
         clerkId: user.id,
       },
     });
-
-    return { message: "product created" };
   } catch (error) {
     return renderError(error);
   }
+  redirect("/admin/products");
 };
