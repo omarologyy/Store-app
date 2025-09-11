@@ -14,20 +14,35 @@ const renderError = (error: unknown): { message: string } => {
   };
 };
 
+// const getAuthUser = async () => {
+//   const userId = await currentUser();
+//   if (!userId) {
+//     redirect("/");
+//   }
+//   return userId;
+// };
+
+// const getAdminUser = async () => {
+//   const user = await getAuthUser();
+//   if (user.id !== process.env.ADMIN_USER_ID) redirect("/");
+//   return user;
+// };
+
 const getAuthUser = async () => {
   const user = await currentUser();
   if (!user) {
     redirect("/");
   }
-  return user;
+  return user; // In case a user is non-null, this execute
 };
 
 const getAdminUser = async () => {
   const user = await getAuthUser();
-  if (user.id !== process.env.ADMIN_USER_ID) redirect("/");
+  if (user.id !== process.env.ADMIN_USER_ID) {
+    redirect("/");
+  }
   return user;
 };
-// refactor createProductAction
 
 export const fetchAdminProducts = async () => {
   await getAdminUser();
