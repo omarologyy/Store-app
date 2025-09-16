@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
-import { productSchema, imageSchema } from "./schemas";
+import { productSchema, imageSchema, validateWithZodType } from "./schemas";
 import { deleteImage, uploadImage } from "./supabase";
 
 const renderError = (error: unknown): { message: string } => {
@@ -13,20 +13,6 @@ const renderError = (error: unknown): { message: string } => {
     message: error instanceof Error ? error.message : "An error occurred",
   };
 };
-
-// const getAuthUser = async () => {
-//   const userId = await currentUser();
-//   if (!userId) {
-//     redirect("/");
-//   }
-//   return userId;
-// };
-
-// const getAdminUser = async () => {
-//   const user = await getAuthUser();
-//   if (user.id !== process.env.ADMIN_USER_ID) redirect("/");
-//   return user;
-// };
 
 const getAuthUser = async () => {
   const user = await currentUser();
@@ -143,4 +129,47 @@ export const deleteProductAction = async (prevState: { productId: string }) => {
   } catch (error) {
     return renderError(error);
   }
+};
+
+export const fetchAdminProductDetails = async (productId: string) => {
+  await getAdminUser();
+  const product = await db.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+  if (!product) redirect("/admin/products");
+  return product;
+};
+
+export const updateProductAction = async (
+  prevState: unknown,
+  formData: FormData
+) => {
+  await getAdminUser();
+  try {
+    const productId = formData.get("id") as string;
+    const rawData = Object.fromEntries(formData);
+
+    const validatedFields = validateWithZodType(productSchema, rawData);
+
+    await db.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        ...validatedFields,
+      },
+    });
+    revalidatePath(`/admin/products/${productId}/edit`);
+    return { message: "Product updated successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+export const updateProductImageAction = async (
+  prevState: unknown,
+  formData: FormData
+) => {
+  return { message: "Product Image updated successfully" };
 };
