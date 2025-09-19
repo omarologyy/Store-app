@@ -17,7 +17,7 @@ function Comment({ comment }: { comment: string }) {
       {longComment && (
         <Button
           variant="link"
-          className="pl-0 text-muted-foreground"
+          className="pl-0 text-muted-foreground text-violet-600"
           onClick={toggleExpanded}
         >
           {isExpanded ? "Show Less" : "Show More"}
