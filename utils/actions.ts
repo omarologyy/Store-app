@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 import db from "@/utils/db";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
-import { productSchema, imageSchema, validateWithZodType } from "./schemas";
+import {
+  productSchema,
+  imageSchema,
+  validateWithZodType,
+  reviewSchema,
+} from "./schemas";
 import { deleteImage, uploadImage } from "./supabase";
 
 const renderError = (error: unknown): { message: string } => {
@@ -257,10 +262,36 @@ export const createReviewAction = async (
   prevState: unknown,
   formData: FormData
 ) => {
-  return { message: "Review submitted successfully." };
+  const user = await getAuthUser();
+  try {
+    const rawData = Object.fromEntries(formData);
+
+    const validatedFields = validateWithZodType(reviewSchema, rawData);
+
+    await db.review.create({
+      data: {
+        ...validatedFields,
+        clerkId: user.id,
+      },
+    });
+    revalidatePath(`/products/${validatedFields.productId}`);
+    return { message: "Review submitted successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
 };
 
-export const fetchProductReviews = async () => {};
+export const fetchProductReviews = async (productId: string) => {
+  const reviews = await db.review.findMany({
+    where: {
+      productId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return reviews;
+};
 export const fetchProductReviewsByUser = async () => {};
 export const deleteReviewAction = async () => {};
 export const findExistingReview = async () => {};
