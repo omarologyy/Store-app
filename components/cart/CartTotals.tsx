@@ -10,7 +10,7 @@ function CartTotals({ cart }: { cart: Cart }) {
   const { cartTotal, shipping, tax, orderTotal } = cart;
   return (
     <div>
-      <Card className="p-8 ">
+      <Card className="p-8">
         <CartTotalRow label="Subtotal" amount={cartTotal} />
         <CartTotalRow label="Shipping" amount={shipping} />
         <CartTotalRow label="Tax" amount={tax} />
