@@ -514,3 +514,7 @@ export const addToCartAction = async (
 export const removeCartItemAction = async () => {};
 
 export const updateCartItemAction = async () => {};
+
+export const createOrderAction = async () => {
+  return { message: "Order placed successfully" };
+};
