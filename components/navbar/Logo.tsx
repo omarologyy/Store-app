@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 function Logo() {
   return (
     <Button variant="outline" className="bg-primary text-white">
-      Umar
+      DevUmar
     </Button>
   );
 }

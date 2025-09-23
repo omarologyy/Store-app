@@ -12,6 +12,7 @@ import {
 } from "./schemas";
 import { deleteImage, uploadImage } from "./supabase";
 import { Cart } from "@prisma/client";
+import { toast } from "sonner";
 
 const renderError = (error: unknown): { message: string } => {
   console.log(error);
@@ -131,7 +132,8 @@ export const deleteProductAction = async (prevState: { productId: string }) => {
     });
     await deleteImage(product.image);
     revalidatePath("/admin/products");
-    return { message: "Product removed" };
+    return { message: "Product deleted successfully" };
+    // return toast("Product deleted successfully");
   } catch (error) {
     return renderError(error);
   }
@@ -483,17 +485,6 @@ export const updateCart = async (cart: Cart) => {
   const shipping = cartTotal ? cart.shipping : 0;
   const orderTotal = cartTotal + tax + shipping;
 
-  // await db.cart.update({
-  //   where: {
-  //     id: cart.id,
-  //   },
-  //   data: {
-  //     numItemsInCart,
-  //     cartTotal,
-  //     tax,
-  //     orderTotal,
-  //   },
-  // });
   const currentCart = await db.cart.update({
     where: {
       id: cart.id,
